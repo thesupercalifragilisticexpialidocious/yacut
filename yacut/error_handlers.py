@@ -15,6 +15,6 @@ def internal_error(error):
     return render_template('500.html'), 500
 
 
-@app.errorhandler(InvalidAPIUsage) 
+@app.errorhandler(InvalidAPIUsage)
 def invalid_api_usage(error):
     return jsonify(error.to_dict()), error.status_code

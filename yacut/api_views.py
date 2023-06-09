@@ -30,8 +30,8 @@ def create_id():
             original=original,
             short=get_unique_short_id(original)
         )
-    elif (not compile(SHORT_MASK).match(data['custom_id'])
-          or len(data['custom_id']) > MAX_LENGTH):
+    elif (not compile(SHORT_MASK).match(data['custom_id']) or
+          len(data['custom_id']) > MAX_LENGTH):
         raise InvalidAPIUsage('Указано недопустимое имя для короткой ссылки')
     elif URLMap.query.filter_by(short=data['custom_id']).first() is not None:
         raise InvalidAPIUsage(f'Имя "{data["custom_id"]}" уже занято.')
