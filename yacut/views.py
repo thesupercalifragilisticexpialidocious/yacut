@@ -1,4 +1,4 @@
-from flask import abort, redirect, render_template, url_for
+from flask import abort, flash, redirect, render_template, url_for
 
 from . import app
 from .forms import LinkForm
@@ -17,15 +17,17 @@ def redirect_(short):
 @app.route('/', methods=['GET', 'POST'])
 def index_view():
     form = LinkForm()
-    return render_template(
-        'index.html',
-        form=form,
-        success_link=url_for(
-            REDIRECT_VIEW,
-            short=URLMap.save(
-                original=form.original_link.data,
-                short=form.custom_id.data
-            ).short,
-            _external=True
-        ) if form.validate_on_submit() else None
-    )
+    success_link = False
+    if form.validate_on_submit():
+        try:
+            success_link = url_for(
+                REDIRECT_VIEW,
+                short=URLMap.save(
+                    original=form.original_link.data,
+                    short=form.custom_id.data
+                ).short,
+                _external=True
+            )
+        except Exception as e:
+            flash(e)
+    return render_template('index.html', form=form, success_link=success_link)

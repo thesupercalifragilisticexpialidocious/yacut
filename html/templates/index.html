@@ -45,5 +45,21 @@
         <div class="col-sm"></div>
       </div>
     </div>
-  {% endif %} 
+  {% endif %}
+  {% with messages = get_flashed_messages() %} 
+    {% for message in messages %} 
+      <div class="container"> 
+        <div class="row "> 
+          <div class="col-sm"></div>   
+          <div class="col-sm"> 
+            <p class="text-center"> 
+              <span style="color: red">{{ message }}</span> 
+            </p> 
+          </div> 
+          <div class="col-sm"></div> 
+        </div> 
+      </div> 
+    {% endfor %} 
+  {% endwith %}  
+
 {% endblock %}

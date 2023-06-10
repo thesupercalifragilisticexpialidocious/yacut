@@ -4,9 +4,8 @@ from wtforms.validators import (DataRequired, Length, Optional,
                                 Regexp, ValidationError)
 
 from .models import URLMap
-from settings import ALLOWED_CHARACTERS, MAX_LENGTH, URL_LIMIT
+from settings import MAX_LENGTH, SHORT_MASK, URL_LIMIT
 
-SHORT_MASK = f'^[{ALLOWED_CHARACTERS}]+$'
 ORIGINAL_PROMPT = 'Введите ссылку'
 ORIGINAL_WARNING = 'Обязательное поле'
 CUSTOM_PROMPT = 'Ваш вариант короткой ссылки'

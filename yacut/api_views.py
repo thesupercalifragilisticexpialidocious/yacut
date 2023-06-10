@@ -3,7 +3,7 @@ from flask import jsonify, request, url_for
 from . import app
 from .exceptions import InvalidAPIUsage
 from .models import URLMap
-from settings import ALLOWED_CHARACTERS, MAX_LENGTH, REDIRECT_VIEW
+from settings import REDIRECT_VIEW
 
 
 @app.route('/api/id/<string:short_id>/', methods=['GET'])
@@ -21,19 +21,11 @@ def create_id():
         raise InvalidAPIUsage('Отсутствует тело запроса')
     if 'url' not in data:
         raise InvalidAPIUsage(r'"url" является обязательным полем!')
-
-    original = data['url']
-    if 'custom_id' not in data or not data['custom_id']:
-        relation = URLMap.save(original)
-
-    elif (not all(char in ALLOWED_CHARACTERS for char in data['custom_id']) or
-          len(data['custom_id']) > MAX_LENGTH):
-        raise InvalidAPIUsage('Указано недопустимое имя для короткой ссылки')
-    elif URLMap.get_by_short(data['custom_id']) is not None:
-        raise InvalidAPIUsage(f'Имя "{data["custom_id"]}" уже занято.')
-    else:
-        relation = URLMap.save(original=original, short=data['custom_id'])
-
+    original, custom = data.get('url'), data.get('custom_id')
+    try:
+        relation = URLMap.save(original, custom)
+    except ValueError as e:
+        raise InvalidAPIUsage(str(e))
     return jsonify({
         'url': relation.original,
         'short_link': url_for(

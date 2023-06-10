@@ -1,9 +1,12 @@
 from datetime import datetime
 from random import choices
+from re import compile
 
 from . import db
 from settings import (ALLOWED_CHARACTERS, CYCLE_DURATION,
-                      DEFAULT_LENGTH, MAX_LENGTH, URL_LIMIT)
+                      DEFAULT_LENGTH, MAX_LENGTH, SHORT_MASK, URL_LIMIT)
+
+ITERATION_LIMIT_HIT = 'Не удается найти незанятый короткий идентификатор.'
 
 
 class URLMap(db.Model):
@@ -12,9 +15,9 @@ class URLMap(db.Model):
     short = db.Column(db.String(MAX_LENGTH), index=True, unique=True)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
 
-    @classmethod
-    def get_by_short(cls, string):
-        return cls.query.filter(cls.short == string).first()
+    @staticmethod
+    def get_by_short(string):
+        return URLMap.query.filter(URLMap.short == string).first()
 
     @staticmethod
     def generate_unique_short_id():
@@ -23,15 +26,20 @@ class URLMap(db.Model):
             if URLMap.get_by_short(short):
                 continue
             return short
-        raise StopIteration(
-            'Не удается найти незанятый короткий идентификатор.'
-        )
+        raise OverflowError(ITERATION_LIMIT_HIT)
 
-    @classmethod
-    def save(cls, original, short=None):
+    @staticmethod
+    def save(original, short=None):
+        if len(original) > URL_LIMIT:
+            raise ValueError('Исходная ссылка слишком длинная.')
+        if short and (not compile(SHORT_MASK).match(short) or
+                      len(short) > MAX_LENGTH):
+            raise ValueError('Указано недопустимое имя для короткой ссылки')
+        if short and URLMap.get_by_short(short) is not None:
+            raise ValueError(f'Имя "{short}" уже занято.')
         instance = URLMap(
             original=original,
-            short=short if short else cls.generate_unique_short_id()
+            short=short if short else URLMap.generate_unique_short_id()
         )
         db.session.add(instance)
         db.session.commit()
