@@ -1,7 +1,15 @@
+# Yacut: генерация коротких ссылок
+
+Сервис позволяет создавать короткие ссылки и осуществлять автоматическую переадрессацию при переходе по ним. Реализована веб-страница и API.
+
+Приложение написано на фреймворке Flask с использованием SQLAlchemy для работы с базой данных.
+
+# Развертывание и запуск
+
 Клонировать репозиторий и перейти в него в командной строке:
 
 ```
-git clone 
+git clone git@github.com:thesupercalifragilisticexpialidocious/yacut.git
 ```
 
 ```
@@ -41,3 +49,6 @@ pip install -r requirements.txt
 ```
 flask run
 ```
+
+https://github.com/thesupercalifragilisticexpialidocious/
+email: cmstreltsov@ya.ru

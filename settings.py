@@ -1,4 +1,12 @@
 from os import getenv
+from string import ascii_letters, digits
+
+MAX_LENGTH = 16
+URL_LIMIT = 2048
+DEFAULT_LENGTH = 6
+ALLOWED_CHARACTERS = ascii_letters + digits
+CYCLE_DURATION = len(ALLOWED_CHARACTERS) ** DEFAULT_LENGTH
+REDIRECT_VIEW = 'redirect_'
 
 
 class Config(object):

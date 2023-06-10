@@ -22,9 +22,7 @@
                   <p>{% for error in form.custom_id.errors %}<span style="color: red">{{ error }}</span>{% endfor %}</p>
                 {% endif %}
                 {% with errors = get_flashed_messages(category_filter=["error"]) %}
-                  {% if errors %}
-                    <p><span style="color: red">{{ errors[0] }}</span></p>
-                  {% endif %}
+                  <p><span style="color: red">{{ errors[0] }}</span></p>
                 {% endwith %}
               </div>
               {{ form.submit(class="btn btn-primary", value=form.submit.label.text) }}
@@ -35,19 +33,17 @@
     </div>
   </div>
 
-  {% with links = get_flashed_messages(category_filter=["success"]) %}
-    {% if links %}
-      <div class="container">
-        <div class="row ">
-          <div class="col-sm"></div>  
-          <div class="col-sm">
-            <p class="text-center">
-              <h5 class="text-center">Ссылка создана:<a href="{{ links[0] }}">{{ links[0] }}</a></h5>
-            </p>
-          </div>
-          <div class="col-sm"></div>
+  {% if success_link %}
+    <div class="container">
+      <div class="row ">
+        <div class="col-sm"></div>  
+        <div class="col-sm">
+          <p class="text-center">
+            <h5 class="text-center">Ссылка создана:<a href="{{ success_link }}">{{ success_link }}</a></h5>
+          </p>
         </div>
+        <div class="col-sm"></div>
       </div>
-    {% endif %}
-  {% endwith %} 
+    </div>
+  {% endif %} 
 {% endblock %}
