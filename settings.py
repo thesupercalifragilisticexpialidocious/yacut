@@ -1,15 +1,13 @@
 from os import getenv
+from re import escape
 from string import ascii_letters, digits
 
 MAX_LENGTH = 16
 URL_LIMIT = 2048
 DEFAULT_LENGTH = 6
 ALLOWED_CHARACTERS = ascii_letters + digits
-REGEX_SPECIALS = r'.+*?^$()[]{}\|\\'
-SHORT_MASK = r'^[' + r''.join(
-    [r'\\' + c if c in REGEX_SPECIALS else c for c in ALLOWED_CHARACTERS]
-) + r']+$'
-CYCLE_DURATION = 4096
+SHORT_MASK = r'^[' + escape(ALLOWED_CHARACTERS) + r']+$'
+CYCLE_DURATION = 10
 REDIRECT_VIEW = 'redirect_'
 
 

@@ -7,6 +7,9 @@ from settings import (ALLOWED_CHARACTERS, CYCLE_DURATION,
                       DEFAULT_LENGTH, MAX_LENGTH, SHORT_MASK, URL_LIMIT)
 
 ITERATION_LIMIT_HIT = 'Не удается найти незанятый короткий идентификатор.'
+LONG_URL_ERROR = 'Исходная ссылка слишком длинная.'
+INVALID_CUSTOM_ERROR = 'Указано недопустимое имя для короткой ссылки'
+OCCUPIED_SHORT_ERROR = 'Имя "{}" уже занято.'
 
 
 class URLMap(db.Model):
@@ -26,17 +29,20 @@ class URLMap(db.Model):
             if URLMap.get_by_short(short):
                 continue
             return short
-        raise OverflowError(ITERATION_LIMIT_HIT)
+        raise GeneratorExit(ITERATION_LIMIT_HIT)
 
     @staticmethod
-    def save(original, short=None):
-        if len(original) > URL_LIMIT:
-            raise ValueError('Исходная ссылка слишком длинная.')
-        if short and (not compile(SHORT_MASK).match(short) or
-                      len(short) > MAX_LENGTH):
-            raise ValueError('Указано недопустимое имя для короткой ссылки')
-        if short and URLMap.get_by_short(short) is not None:
-            raise ValueError(f'Имя "{short}" уже занято.')
+    def save(original, short=None, already_validated=False):
+        if not already_validated:
+            if len(original) > URL_LIMIT:
+                raise ValueError(LONG_URL_ERROR)
+            if short:
+                if len(short) > MAX_LENGTH:
+                    raise ValueError(INVALID_CUSTOM_ERROR)
+                if not compile(SHORT_MASK).match(short):
+                    raise ValueError(INVALID_CUSTOM_ERROR)
+                if URLMap.get_by_short(short) is not None:
+                    raise ValueError(OCCUPIED_SHORT_ERROR.format(short))
         instance = URLMap(
             original=original,
             short=short if short else URLMap.generate_unique_short_id()

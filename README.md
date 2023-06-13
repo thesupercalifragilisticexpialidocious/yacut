@@ -44,11 +44,27 @@ python3 -m pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
+Создайте файл .env c содержимым:
+
+```
+FLASK_APP=yacut
+FLASK_ENV=development [или production] 
+DATABASE_URI=[идентификатор СУБД в формате: mysql://username:password@server/db. опционально, по умолчанию подключится sqlite3]
+SECRET_KEY=[ваш случайный ключ]
+
+Создайте таблицы:
+
+```
+flask shell
+>>>from yacut import db
+>>>db.create_all()
+```
+
 Запуск:
 
 ```
 flask run
 ```
 
-https://github.com/thesupercalifragilisticexpialidocious/
-email: cmstreltsov@ya.ru
+[github.com/thesupercalifragilisticexpialidocious](https://github.com/thesupercalifragilisticexpialidocious/)
+email: [cmstreltsov@ya.ru](mailto:cmstreltsov@ya.ru)

@@ -21,16 +21,15 @@ def create_id():
         raise InvalidAPIUsage('Отсутствует тело запроса')
     if 'url' not in data:
         raise InvalidAPIUsage(r'"url" является обязательным полем!')
-    original, custom = data.get('url'), data.get('custom_id')
     try:
-        relation = URLMap.save(original, custom)
+        relation = URLMap.save(data.get('url'), data.get('custom_id'))
     except ValueError as e:
         raise InvalidAPIUsage(str(e))
     return jsonify({
-        'url': relation.original,
+        'url': relation.original,  # relation once
         'short_link': url_for(
             REDIRECT_VIEW,
-            short=relation.short,
+            short=relation.short,  # relation twice
             _external=True
         )
     }), 201

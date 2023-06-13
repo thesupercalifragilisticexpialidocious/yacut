@@ -17,17 +17,19 @@ def redirect_(short):
 @app.route('/', methods=['GET', 'POST'])
 def index_view():
     form = LinkForm()
-    success_link = False
-    if form.validate_on_submit():
-        try:
-            success_link = url_for(
-                REDIRECT_VIEW,
-                short=URLMap.save(
-                    original=form.original_link.data,
-                    short=form.custom_id.data
-                ).short,
-                _external=True
-            )
-        except Exception as e:
-            flash(e)
-    return render_template('index.html', form=form, success_link=success_link)
+    if not form.validate_on_submit():
+        return render_template('index.html', form=form)
+    try:
+        success_link = url_for(
+            REDIRECT_VIEW,
+            short=URLMap.save(
+                original=form.original_link.data,
+                short=form.custom_id.data,
+                already_validated=True
+            ).short,
+            _external=True
+        )
+        return render_template('index.html', form=form, success_link=success_link)
+    except Exception as e:
+        flash(e)
+    return render_template('index.html', form=form)
