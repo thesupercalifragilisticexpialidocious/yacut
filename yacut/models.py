@@ -19,21 +19,20 @@ class URLMap(db.Model):
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
 
     @staticmethod
-    def get_by_short(string):
-        return URLMap.query.filter(URLMap.short == string).first()
+    def get_by_short(short):
+        return URLMap.query.filter(URLMap.short == short).first()
 
     @staticmethod
     def generate_unique_short_id():
         for _ in range(CYCLE_DURATION):
             short = ''.join(choices(ALLOWED_CHARACTERS, k=DEFAULT_LENGTH))
-            if URLMap.get_by_short(short):
-                continue
-            return short
-        raise GeneratorExit(ITERATION_LIMIT_HIT)
+            if not URLMap.get_by_short(short):
+                return short
+        raise AttributeError(ITERATION_LIMIT_HIT)
 
     @staticmethod
-    def save(original, short=None, already_validated=False):
-        if not already_validated:
+    def save(original, short=None, validated=False):
+        if not validated:
             if len(original) > URL_LIMIT:
                 raise ValueError(LONG_URL_ERROR)
             if short:
