@@ -51,6 +51,7 @@ FLASK_APP=yacut
 FLASK_ENV=development [или production] 
 DATABASE_URI=[идентификатор СУБД в формате: mysql://username:password@server/db. опционально, по умолчанию подключится sqlite3]
 SECRET_KEY=[ваш случайный ключ]
+```
 
 Создайте таблицы:
 
