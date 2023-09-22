@@ -68,4 +68,3 @@ flask run
 ```
 
 [github.com/thesupercalifragilisticexpialidocious](https://github.com/thesupercalifragilisticexpialidocious/)
-email: [cmstreltsov@ya.ru](mailto:cmstreltsov@ya.ru)
